@@ -3,13 +3,15 @@ local Tree = {}
 
 --[[
 	Constructs a Node
+	@param Value	The weight to give to the node in the tree
+	@param Extra	Optional. The extra data to store into the node
 	@return A Node
 ]]
-Node = function(Value, ...)
+Node = function(Value, Extra)
 	local self = {}
 
 	self.Value = Value
-	self.Extra = {...}
+	self.Extra = Extra
 	self.Left = nil
 	self.Right = nil
 	self.Height = 1
@@ -21,20 +23,20 @@ end
 	Insert a new node below a root
 	@param Root		The ancestor node to insert below
 	@param Value	The value to create a new with
-	@param ...		The extra data to insert into the new node
+	@param Extra	Optional. The extra data to insert into the new node
 	@returns the new root of the tree
 ]]
-function Tree.Insert(Root, Value, ...)
+function Tree.Insert(Root, Value, Extra)
 	-- Creates a root if the tree's root does not exist
 	if Root == nil then
-		return Node(Value, ...)
+		return Node(Value, Extra)
 	end
 
 	-- Inserts to the left or right of the root
 	if Value < Root.Value then
-		Root.Left = Tree.Insert(Root.Left, Value, ...)
+		Root.Left = Tree.Insert(Root.Left, Value, Extra)
 	else
-		Root.Right = Tree.Insert(Root.Right, Value, ...)
+		Root.Right = Tree.Insert(Root.Right, Value, Extra)
 	end
 
 	-- Update the height of the ancestor node

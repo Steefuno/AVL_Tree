@@ -103,7 +103,7 @@ function Tree.Remove(Root, Value)
 		end
 		
 		-- Replace root with the lowest valued node with a greater value than the root 
-		local LowestNodeOnRight = GetLowestValueNode(Root.Right)
+		local LowestNodeOnRight = Tree.GetLowestValueNode(Root.Right)
 		local NewRoot = Node(LowestNodeOnRight.Value, LowestNodeOnRight.Extra)
 		NewRoot.Left = Root.Left
 		NewRoot.Right = Tree.Remove(Root.Right, LowestNodeOnRight.Value)
@@ -193,11 +193,11 @@ end
 	@param Node		The ancestor node to search under
 	@return the node with the lowest value
 ]]
-function GetLowestValueNode(Node)
+function Tree.GetLowestValueNode(Node)
 	if (Node == nil) or (Node.Left == nil) then
 		return Node
 	else
-		return GetLowestValueNode(Node.Left)
+		return Tree.GetLowestValueNode(Node.Left)
 	end
 end
 
@@ -208,7 +208,7 @@ end
 ]]
 function RightRotate(Node0)
 	local Node1 = Node0.Left
-	local Node2 = Node1.Right
+	local Node2 = (Node1 ~= nil) and (Node1.Right) or (nil)
 
 	-- Rotate
 	Node1.Right = Node0
@@ -234,7 +234,7 @@ end
 ]]
 function LeftRotate(Node0)
 	local Node1 = Node0.Right
-	local Node2 = Node1.Left
+	local Node2 = (Node1 ~= nil) and (Node1.Left) or (nil)
 
 	-- Rotate
 	Node1.Left = Node0

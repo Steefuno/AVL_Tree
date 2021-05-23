@@ -1,4 +1,5 @@
 -- https://www.geeksforgeeks.org/avl-tree-set-1-insertion/
+-- https://www.geeksforgeeks.org/avl-tree-set-2-deletion/
 local Tree = {}
 
 --[[
@@ -37,6 +38,76 @@ function Tree.Insert(Root, Value, Extra)
 		Root.Left = Tree.Insert(Root.Left, Value, Extra)
 	else
 		Root.Right = Tree.Insert(Root.Right, Value, Extra)
+	end
+
+	-- Update the height of the ancestor node
+	Root.Height = 1 + math.max(
+		Tree.GetHeight(Root.Left),
+		Tree.GetHeight(Root.Right)
+	)
+
+	-- Get the balance factor
+	local Balance = GetBalance(Root)
+
+	-- If unbalanced, balance using the 4 cases
+	-- Left Left
+	if (Balance > 1) and (Value < Root.Left.Value) then
+		 return RightRotate(Root)
+	end
+
+	-- Right Right
+	if (Balance < -1) and (Value > Root.Right.Value) then
+		return LeftRotate(Root)
+	end
+
+	-- Left Right
+	if (Balance > 1) and (Value > Root.Left.Value) then
+		Root.Left = LeftRotate(Root.Left)
+		return RightRotate(Root)
+	end
+
+	-- Right Left
+	if (Balance < -1) and (Value < Root.Right.Value) then
+		Root.Right = RightRotate(Root.Right)
+		return LeftRotate(Root)
+	end
+
+	return Root
+end
+
+--[[
+	Searches the AVL to remove a node
+	@param Root		The ancestor node to search below
+	@param Value	The value search for in the AVL Tree
+	@returns the new root of the tree
+]]
+function Tree.Remove(Root, Value)
+	-- Returns nil if Root does not exist
+	if Root == nil then
+		return nil
+	end
+
+	-- Remove
+	if Value < Root.Value then
+		Root.Left = Tree.Remove(Root.Left, Value)
+	elseif Value > Root.Value then
+		Root.Right = Tree.Remove(Root.Right, Value)
+	else -- Remove the root if the root is the node to remove
+		-- If Root has no left, shift up the right branch
+		if Root.Left == nil then
+			return Root.Right
+		end
+		-- If Root has no right, shift up the left branch
+		if Root.Right == nil then
+			return Root.Left
+		end
+		
+		-- Replace root with the lowest valued node with a greater value than the root 
+		local LowestNodeOnRight = GetLowestValueNode(Root.Right)
+		local NewRoot = Node(LowestNodeOnRight.Value, LowestNodeOnRight.Extra)
+		NewRoot.Left = Root.Left
+		NewRoot.Right = Tree.Remove(Root.Right, LowestNodeOnRight.Value)
+		Root = NewRoot
 	end
 
 	-- Update the height of the ancestor node
@@ -114,6 +185,19 @@ function GetBalance(Node)
 		return 0
 	else
 		return Tree.GetHeight(Node.Left) - Tree.GetHeight(Node.Right)
+	end
+end
+
+--[[
+	Gets the node below this node with the lowest value
+	@param Node		The ancestor node to search under
+	@return the node with the lowest value
+]]
+function GetLowestValueNode(Node)
+	if (Node == nil) or (Node.Left == nil) then
+		return Node
+	else
+		return GetLowestValueNode(Node.Left)
 	end
 end
 

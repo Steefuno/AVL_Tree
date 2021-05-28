@@ -1,6 +1,53 @@
 -- https://www.geeksforgeeks.org/avl-tree-set-1-insertion/
 -- https://www.geeksforgeeks.org/avl-tree-set-2-deletion/
 local Tree = {}
+local ClassVariables = {}
+
+--[[
+	Constructs a tree
+	@param Init		An unordered list of pairs of {Value, Extra} to insert into the tree
+	@return the tree object
+]]
+Tree.new = function(Init)
+	local self = {}
+	setmetatable(self, { __index = ClassVariables } )
+	
+	self.Root = nil
+	for _, NodeData in ipairs(Init) do
+		if type(NodeData) == "table" then
+			self.Root = Tree.Insert(self.Root, unpack(NodeData))
+		else
+			self.Root = Tree.Insert(self.Root, NodeData)
+		end
+	end
+	
+	return self
+end
+
+--[[
+	Inserts a node of the tree
+	@param Value	The value to create a new with
+	@param Extra	Optional. The extra data to insert into the new node
+]]
+function ClassVariables:Insert(...)
+	self.Root = Tree.Insert(self.Root, ...)
+end
+
+--[[
+	Removes a node of the tree
+	@param Value	The value search for in the AVL Tree
+]]
+function ClassVariables:Remove(...)
+	self.Root = Tree.Remove(self.Root, ...)
+end
+
+--[[
+	Gets a value from the tree
+	@return The node or nil
+]]
+function ClassVariables:Get(...)
+	return Tree.Get(self.Root, ...)
+end
 
 --[[
 	Constructs a Node

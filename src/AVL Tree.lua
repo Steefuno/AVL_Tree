@@ -13,11 +13,13 @@ Tree.new = function(Init)
 	setmetatable(self, { __index = ClassVariables } )
 	
 	self.Root = nil
-	for _, NodeData in ipairs(Init) do
-		if type(NodeData) == "table" then
-			self.Root = Tree.Insert(self.Root, unpack(NodeData))
-		else
-			self.Root = Tree.Insert(self.Root, NodeData)
+	if Init ~= nil then
+		for _, NodeData in ipairs(Init) do
+			if type(NodeData) == "table" then
+				self.Root = Tree.Insert(self.Root, unpack(NodeData))
+			else
+				self.Root = Tree.Insert(self.Root, NodeData)
+			end
 		end
 	end
 	
